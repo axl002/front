@@ -1,0 +1,52 @@
+<html>
+<body>
+ <p id="title">UTC Clock</p>
+ <p id="clock">Current Time</p>
+ <p id="some_stuff">Current Time</p>
+</body>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+</script>
+
+<script>
+
+function anyFunction()
+{
+ function fixTimeFormat(i) {
+    return ( i < 10 ) ? "0" + i : i;
+ }
+ var today = new Date(),
+    h = fixTimeFormat(today.getHours()),
+    m = fixTimeFormat(today.getMinutes()),
+    s = fixTimeFormat(today.getSeconds());
+ document.getElementById("clock").innerHTML = h + ":" + m + ":" + s;
+}
+
+function funCall(){
+	r = require('rethinkdb')
+	var connection = null;
+	r.connect( {host: '35.166.62.31', port: 28015}, function(err, conn) {
+    		if (err) throw err;
+    		connection = conn;
+	});
+
+	var foo =null;
+	foo = r.table('itemCount').run(connection, function(err, cursor) {
+    		if (err) throw err;
+    		cursor.toArray(function(err, result) {
+        			if (err) throw err;
+        			return JSON.stringify(result, null, 2);
+    		});
+	});
+
+
+	document.getElementById("some_stuff").innerHTML = foo;
+}
+
+$(function () {
+ //setInterval(anyFunction, 2000);
+ setInterval(funCall, 2000);
+});
+
+</script>
+</html>
